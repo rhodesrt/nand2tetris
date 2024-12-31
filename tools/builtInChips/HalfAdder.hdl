@@ -1,0 +1,15 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: tools/builtInChips/HalfAdder.hdl
+/**
+ * Computes the sum of two bits.
+ */
+ CHIP HalfAdder {
+
+    IN  a, b;
+    OUT sum,   // LSB of a + b
+        carry; // MSB of a + b
+
+    BUILTIN HalfAdder;
+}

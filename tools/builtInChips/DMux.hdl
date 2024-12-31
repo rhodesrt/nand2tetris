@@ -1,0 +1,16 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: tools/builtInChips/DMux.hdl
+/**
+ * Demultiplexor:
+ * [a, b] = ((sel == 0), [in, 0], [0, in])
+ */
+CHIP DMux {
+
+    IN  in, sel;
+    OUT a, b;
+
+    BUILTIN DMux;
+}
+
