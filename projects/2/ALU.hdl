@@ -41,5 +41,110 @@ CHIP ALU {
         ng;      // if (out < 0)  equals 1, else 0
 
     PARTS:
-    //// Replace this comment with your code.
+    // handle zx
+    Xor(a=x[0], b=x[0], out=zerox0);
+    Xor(a=x[1], b=x[1], out=zerox1);
+    Xor(a=x[2], b=x[2], out=zerox2);
+    Xor(a=x[3], b=x[3], out=zerox3);
+    Xor(a=x[4], b=x[4], out=zerox4);
+    Xor(a=x[5], b=x[5], out=zerox5);
+    Xor(a=x[6], b=x[6], out=zerox6);
+    Xor(a=x[7], b=x[7], out=zerox7);
+    Xor(a=x[8], b=x[8], out=zerox8);
+    Xor(a=x[9], b=x[9], out=zerox9);
+    Xor(a=x[10], b=x[10], out=zerox10);
+    Xor(a=x[11], b=x[11], out=zerox11);
+    Xor(a=x[12], b=x[12], out=zerox12);
+    Xor(a=x[13], b=x[13], out=zerox13);
+    Xor(a=x[14], b=x[14], out=zerox14);
+    Xor(a=x[15], b=x[15], out=zerox15);
+
+    Mux16(
+        a=x,
+        b[0]=zerox0,
+        b[1]=zerox1,
+        b[2]=zerox2,
+        b[3]=zerox3,
+        b[4]=zerox4,
+        b[5]=zerox5,
+        b[6]=zerox6,
+        b[7]=zerox7,
+        b[8]=zerox8,
+        b[9]=zerox9,
+        b[10]=zerox10,
+        b[11]=zerox11,
+        b[12]=zerox12,
+        b[13]=zerox13,
+        b[14]=zerox14,
+        b[15]=zerox15,
+        sel=zx,
+        out=zxout
+    );
+
+    // handle nx
+    Not16(in=zxout, out=notzxout);
+    Mux16(a=zxout, b=notzxout, sel=nx, out=nxout);
+
+    // handle zy
+    Xor(a=y[0], b=y[0], out=zeroy0);
+    Xor(a=y[1], b=y[1], out=zeroy1);
+    Xor(a=y[2], b=y[2], out=zeroy2);
+    Xor(a=y[3], b=y[3], out=zeroy3);
+    Xor(a=y[4], b=y[4], out=zeroy4);
+    Xor(a=y[5], b=y[5], out=zeroy5);
+    Xor(a=y[6], b=y[6], out=zeroy6);
+    Xor(a=y[7], b=y[7], out=zeroy7);
+    Xor(a=y[8], b=y[8], out=zeroy8);
+    Xor(a=y[9], b=y[9], out=zeroy9);
+    Xor(a=y[10], b=y[10], out=zeroy10);
+    Xor(a=y[11], b=y[11], out=zeroy11);
+    Xor(a=y[12], b=y[12], out=zeroy12);
+    Xor(a=y[13], b=y[13], out=zeroy13);
+    Xor(a=y[14], b=y[14], out=zeroy14);
+    Xor(a=y[15], b=y[15], out=zeroy15);
+
+    Mux16(
+        a=y,
+        b[0]=zeroy0,
+        b[1]=zeroy1,
+        b[2]=zeroy2,
+        b[3]=zeroy3,
+        b[4]=zeroy4,
+        b[5]=zeroy5,
+        b[6]=zeroy6,
+        b[7]=zeroy7,
+        b[8]=zeroy8,
+        b[9]=zeroy9,
+        b[10]=zeroy10,
+        b[11]=zeroy11,
+        b[12]=zeroy12,
+        b[13]=zeroy13,
+        b[14]=zeroy14,
+        b[15]=zeroy15,
+        sel=zy,
+        out=zyout
+    );
+
+    // handle ny
+    Not16(in=zyout, out=notzyout);
+    Mux16(a=zyout, b=notzyout, sel=ny, out=nyout);
+
+    // handle f
+    And16(a=nxout, b=nyout, out=fandout);
+    Add16(a=nxout, b=nyout, out=faddout);
+    Mux16(a=fandout, b=faddout, sel=f, out=fout);
+
+    // handle no
+    Not16(in=fout, out=notfout);
+    Mux16(a=fout, b=notfout, sel=no, out=noout);
+
+    // handle zr
+    Or16Way(in=noout, out=zrOr16out);
+    Not(in=zrOr16out, out=zr);
+
+    // handle ng
+    IsNegative(in=noout, out=ng);
+
+    // handle out
+    Mux16(a=fout, b=notfout, sel=no, out=out);
 }
