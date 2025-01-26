@@ -1,0 +1,55 @@
+/**
+ * Jump chip: Custom chip by Tristan Rhodes.
+ */
+CHIP Jump {
+    IN in[3], zr, ng;
+    OUT out;
+
+    PARTS:
+    Not(in=zr, out=notZr);
+    Xor(a=zr, b=notZr, out=xorOut);
+    DMux8Way(
+      in=xorOut,
+      sel=in,
+      a=a,
+      b=b,
+      c=c,
+      d=d,
+      e=e,
+      f=f,
+      g=g,
+      h=h
+    );
+
+    // null
+    Xor(a=a, b=a, out=out0);
+    // JGT
+    Not(in=ng, out=notNg);
+    And(a=notNg, b=notZr, out=jgtAndOut);
+    And(a=b, b=jgtAndOut, out=out1);
+    // JEQ
+    And(a=c, b=zr, out=out2);
+    // JGE
+    Or(a=zr, b=notNg, out=jgeOrOut);
+    And(a=d, b=jgeOrOut, out=out3);
+    // JLT
+    And(a=e, b=ng, out=out4);
+    // JNE
+    And(a=f, b=notZr, out=out5);
+    // JLE
+    Or(a=zr, b=ng, out=jleOrOut);
+    And(a=g, b=jleOrOut, out=out6);
+    // JMP
+    Not(in=h, out=jmpNotOut);
+    Not(in=jmpNotOut, out=out7);
+
+    Or(a=out0, b=out1, out=orOut0);
+    Or(a=out2, b=out3, out=orOut1);
+    Or(a=out4, b=out5, out=orOut2);
+    Or(a=out6, b=out7, out=orOut3);
+
+    Or(a=orOut0, b=orOut1, out=orOut4);
+    Or(a=orOut2, b=orOut3, out=orOut5);
+
+    Or(a=orOut4, b=orOut5, out=out);
+}

@@ -31,6 +31,57 @@ CHIP CPU {
         addressM[15],    // Address in data memory (of M)
         pc[15];          // address of next instruction
 
+    // 1xxaccccccdddjjj
     PARTS:
-	//// Replace this comment with your code.
+	Mux16(a=instruction, b=aluOutput, sel=instruction[15], out=muxOut);
+
+    ARegister(in=muxOut, load=instruction[5], out=aRegisterOut);
+
+    DRegister(in=aluOutput, load=instruction[4], out=dRegisterOut);
+
+    Mux16(a=aRegisterOut, b=inM, sel=instruction[12], out=muxOut1);
+
+    ALU(
+        x=dRegisterOut,
+        y=muxOut1,
+        zx=instruction[11],
+        nx=instruction[10],
+        zy=instruction[9],
+        ny=instruction[8],
+        f=instruction[7],
+        no=instruction[6],
+        out=aluOutput,
+        zr=zr,
+        ng=ng
+    );
+
+    Jump(
+        in[0]=instruction[0],
+        in[1]=instruction[1],
+        in[2]=instruction[2],
+        zr=zr,
+        ng=ng,
+        out=jumpOut
+    );
+
+    Not(in=reset, out=notReset);
+    PC(
+        in=aRegisterOut,
+        inc=notReset,
+        load=jumpOut,
+        reset=reset,
+        out[0..14]=pc
+    );
+
+    // outM
+    Not16(in=aluOutput, out=notAluOutput);
+    Not16(in=notAluOutput, out=outM);
+
+    // writeM
+    Not(in=instruction[3], out=not3d);
+    Not(in=not3d, out=writeM);
+
+    // addressM
+    Not16(in=aRegisterOut, out=notARegisterOut);
+    Not16(in=notARegisterOut, out[0..14]=addressM);
 }

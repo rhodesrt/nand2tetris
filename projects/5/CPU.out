@@ -1,0 +1,2 @@
+|time | inM  |  instruction   |reset| outM  |writeM|address| pc  |DRegister|
+| 0+  |     0|0011000000111001|  0  |      0|   1  |     0 |    0|       0 |
