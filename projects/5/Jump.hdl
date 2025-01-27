@@ -7,9 +7,10 @@ CHIP Jump {
 
     PARTS:
     Not(in=zr, out=notZr);
-    Xor(a=zr, b=notZr, out=xorOut);
+    Not(in=ng, out=notNg);
+    Xor(a=zr, b=notZr, out=one);
     DMux8Way(
-      in=xorOut,
+      in=one,
       sel=in,
       a=a,
       b=b,
@@ -24,7 +25,6 @@ CHIP Jump {
     // null
     Xor(a=a, b=a, out=out0);
     // JGT
-    Not(in=ng, out=notNg);
     And(a=notNg, b=notZr, out=jgtAndOut);
     And(a=b, b=jgtAndOut, out=out1);
     // JEQ

@@ -33,9 +33,14 @@ CHIP CPU {
 
     // 1xxaccccccdddjjj
     PARTS:
-	Mux16(a=instruction, b=aluOutput, sel=instruction[15], out=muxOut);
+    Not(in=instruction[15], out=aInstruction);
+    Not(in=aInstruction, out=cInstruction);
 
-    ARegister(in=muxOut, load=instruction[5], out=aRegisterOut);
+    And(a=cInstruction, b=instruction[5], out=aluToA);
+	Mux16(a=instruction, b=aluOutput, sel=aluToA, out=muxOut);
+
+    Or(a=aInstruction, b=aluToA, out=loadA);
+    ARegister(in=muxOut, load=loadA, out=aRegisterOut);
 
     DRegister(in=aluOutput, load=instruction[4], out=dRegisterOut);
 
@@ -63,25 +68,23 @@ CHIP CPU {
         ng=ng,
         out=jumpOut
     );
+    And(a=instruction[15], b=jumpOut, out=pcLoad);
 
-    Not(in=reset, out=notReset);
+    Not(in=pcLoad, out=pcInc);
     PC(
         in=aRegisterOut,
-        inc=notReset,
-        load=jumpOut,
+        inc=pcInc,
+        load=pcLoad,
         reset=reset,
         out[0..14]=pc
     );
 
     // outM
-    Not16(in=aluOutput, out=notAluOutput);
-    Not16(in=notAluOutput, out=outM);
+    Or16(a=false, b=aluOutput, out=outM);
 
     // writeM
-    Not(in=instruction[3], out=not3d);
-    Not(in=not3d, out=writeM);
+    And(a=instruction[15], b=instruction[3], out=writeM);
 
     // addressM
-    Not16(in=aRegisterOut, out=notARegisterOut);
-    Not16(in=notARegisterOut, out[0..14]=addressM);
+    Or16(a=false, b=aRegisterOut, out[0..14]=addressM);
 }
