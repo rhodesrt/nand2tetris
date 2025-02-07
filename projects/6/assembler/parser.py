@@ -1,15 +1,49 @@
 class Parser:
-  def instructionType(line):
-    return "instruction type"
+  A_INSTRUCTION = "A_INSTRUCTION"
+  C_INSTRUCTION = "C_INSTRUCTION"
 
-  def symbol(line):
-    return "symbol"
+  def instructionType(self, line):
+    if line[0] == "@":
+      return self.A_INSTRUCTION
+    else:
+      return self.C_INSTRUCTION
 
-  def dest(line):
-    return "dest"
+  def symbol(self, line):
+    if self.instructionType(line) == self.C_INSTRUCTION:
+      return None
+    else:
+      return str(line[1:])
 
-  def comp(line):
-    return "comp"
+  def dest(self, line):
+    if self.instructionType(line) == self.A_INSTRUCTION:
+      return None
+    else:
+      equals_idx = line.find("=")
+      if equals_idx == -1:
+        return None
+      else:
+        return str(line[:equals_idx])
 
-  def jump(line):
-    return "jump"
+  def comp(self, line):
+    if self.instructionType(line) == self.A_INSTRUCTION:
+      return None
+    else:
+      semicolon_idx = line.find(";")
+      equals_idx = line.find("=")
+
+      if semicolon_idx == -1:
+        return str(line[(equals_idx + 1) :])
+      elif equals_idx == -1:
+        return str(line[:semicolon_idx])
+      else:
+        return str(line[(equals_idx + 1) : semicolon_idx])
+
+  def jump(self, line):
+    if self.instructionType(line) == self.A_INSTRUCTION:
+      return None
+    else:
+      semicolon_idx = line.find(";")
+      if semicolon_idx == -1:
+        return None
+      else:
+        return str(line[(semicolon_idx + 1) :])
