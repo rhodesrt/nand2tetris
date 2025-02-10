@@ -5,7 +5,7 @@ from code import Code
 
 def main():
   args = sys.argv[1:]
-  if len(args) != 2:
+  if len(args) != 1:
     print("Usage: Input one argument corresponding to .asm file path")
     return
 
@@ -20,6 +20,10 @@ def main():
 
   with open(path, "r") as file:
     for line in file:
+      line = line.rstrip("\n")
+      if line[:2] == "//" or len(line) == 0:
+        continue
+
       instructionType = parser.instructionType(line)
       symbol = parser.symbol(line)
       dest = parser.dest(line)
