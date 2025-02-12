@@ -1,18 +1,23 @@
 class Parser:
   A_INSTRUCTION = "A_INSTRUCTION"
   C_INSTRUCTION = "C_INSTRUCTION"
+  L_INSTRUCTION = "L_INSTRUCTION"
 
   def instructionType(self, line):
     if line[0] == "@":
       return self.A_INSTRUCTION
+    elif line[0] == "(":
+      return self.L_INSTRUCTION
     else:
       return self.C_INSTRUCTION
 
   def symbol(self, line):
     if self.instructionType(line) == self.C_INSTRUCTION:
       return None
-    else:
+    elif self.instructionType(line) == self.A_INSTRUCTION:
       return str(line[1:])
+    else:
+      return str(line[1:-1])
 
   def dest(self, line):
     if self.instructionType(line) == self.A_INSTRUCTION:

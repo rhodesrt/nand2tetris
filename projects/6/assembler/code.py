@@ -33,7 +33,7 @@ class Code:
   dest_table = {
     "M": "001",
     "D": "010",
-    "DM": "011",
+    "MD": "011",
     "A": "100",
     "AM": "101",
     "AD": "110",
@@ -50,9 +50,12 @@ class Code:
     "JMP": "111",
   }
 
-  def getCode(self, instructionType, symbol, dest, comp, jump):
+  def getCode(self, instructionType, symbol, dest, comp, jump, symbol_table):
     if instructionType == "A_INSTRUCTION":
-      return "0" + str(bin(int(symbol))[2:].zfill(15))
+      if not symbol[0].isdigit():
+        return "0" + str(bin(symbol_table[symbol])[2:].zfill(15))
+      else:
+        return "0" + str(bin(int(symbol))[2:].zfill(15))
     elif instructionType == "C_INSTRUCTION":
       compCode = self.comp_table[comp]
       destCode = self.dest_table[dest] if dest is not None else "000"

@@ -11,7 +11,7 @@
    @R0
    D=M
    @END
-   D;JLE 
+   D;JLE
    @n
    M=D
    // addr = base address of first screen row
