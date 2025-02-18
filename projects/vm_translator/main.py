@@ -1,7 +1,7 @@
 import os
 import sys
 from code_writer import CodeWriter
-from parser import Parser
+from vm_parser import Parser
 
 
 def main():
@@ -24,7 +24,6 @@ def main():
 
   with open(path, "r") as file:
     lines = file.readlines()
-    line_number = 0
 
     for line in lines:
       line = line.rstrip("\n")
