@@ -210,7 +210,18 @@ class ASMCodeWriter:
           "M=M+1"
         ]
       elif segment == "that":
-        instructions = []
+        instructions = [
+          f"@{index}",
+          "D=A",
+          "@THAT",
+          "A=M+D",
+          "D=M",
+          "@SP",
+          "A=M",
+          "M=D",
+          "@SP",
+          "M=M+1"
+        ]
       elif segment == "static":
         instructions = []
     elif command == "pop":
