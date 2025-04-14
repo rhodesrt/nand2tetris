@@ -223,7 +223,15 @@ class ASMCodeWriter:
           "M=M+1"
         ]
       elif segment == "static":
-        instructions = []
+        instructions = [
+          f"@{self.filename}.{index}",
+          "D=M",
+          "@SP",
+          "A=M",
+          "M=D",
+          "@SP",
+          "M=M+1"
+        ]
     elif command == "pop":
       if segment == "local":
         instructions = []
