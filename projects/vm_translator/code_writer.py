@@ -234,7 +234,21 @@ class ASMCodeWriter:
         ]
     elif command == "pop":
       if segment == "local":
-        instructions = []
+        instructions = [
+          f"@{index}",
+          "D=A",
+          "@LCL",
+          "D=M+D",
+          "@R13",
+          "M=D",
+          "@SP",
+          "M=M-1",
+          "A=M",
+          "D=M",
+          "@R13",
+          "A=M",
+          "M=D"
+        ]
       elif segment == "constant":
         instructions = []
       elif segment == "pointer":
