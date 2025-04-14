@@ -138,11 +138,38 @@ class ASMCodeWriter:
 
     if command == "push":
       if segment == "local":
-        instructions = []
+        instructions = [
+          f"@{index}",
+          "D=A",
+          "@LCL",
+          "A=M+D",
+          "D=M",
+          "@SP",
+          "A=M",
+          "M=D",
+          "@SP",
+          "M=M+1"
+        ]
       elif segment == "constant":
-        instructions = []
+        instructions = [
+          f"@{index}",
+          "D=A",
+          "@SP",
+          "A=M",
+          "M=D",
+          "@SP",
+          "M=M+1"
+        ]
       elif segment == "pointer":
-        instructions = []
+        instructions = [
+          "@THIS" if index == "0" else "@THAT",
+          "D=M",
+          "@SP",
+          "A=M",
+          "M=D",
+          "@SP",
+          "M=M+1"
+        ]
       elif segment == "temp":
         instructions = []
       elif segment == "arg":
