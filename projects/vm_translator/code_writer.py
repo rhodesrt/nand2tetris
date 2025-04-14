@@ -294,11 +294,46 @@ class ASMCodeWriter:
           "M=D"
         ]
       elif segment == "this":
-        instructions = []
+        instructions = [
+          f"@{index}",
+          "D=A",
+          "@THIS",
+          "D=M+D",
+          "@R13",
+          "M=D",
+          "@SP",
+          "M=M-1",
+          "A=M",
+          "D=M",
+          "@R13",
+          "A=M",
+          "M=D"
+        ]
       elif segment == "that":
-        instructions = []
+        instructions = [
+          f"@{index}",
+          "D=A",
+          "@THAT",
+          "D=M+D",
+          "@R13",
+          "M=D",
+          "@SP",
+          "M=M-1",
+          "A=M",
+          "D=M",
+          "@R13",
+          "A=M",
+          "M=D"
+        ]
       elif segment == "static":
-        instructions = []
+        instructions = [
+          "@SP",
+          "M=M-1",
+          "A=M",
+          "D=M",
+          f"@{self.filename}.{index}",
+          "M=D"
+        ]
 
     for ins in instructions:
       self.write_line(ins)
