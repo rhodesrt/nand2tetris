@@ -1,6 +1,181 @@
-class CodeWriter:
-  def gen_arithmetic_asm(self, command):
-    pass
+class ASMCodeWriter:
+  def __init__(self, path):
+    self.file = open(f"{path[:-3]}.asm", "w")
+    self.filename = path.split("/")[-1][:-3]
 
-  def gen_push_pop_asm(self, command_type, segment, index):
-    pass
+  def write_arithmetic(self, command):
+    self.write_line(f"// {command}")
+
+    if command == "add":
+      instructions = [
+        "@SP",
+        "M=M-1",
+        "A=M",
+        "D=M",
+        "@SP",
+        "M=M-1",
+        "A=M",
+        "D=D+M",
+        "@SP",
+        "A=M",
+        "M=D",
+        "@SP",
+        "M=M+1",
+      ]
+    elif command == "sub":
+      instructions = [
+        "@SP",
+        "M=M-1",
+        "A=M",
+        "D=M",
+        "@SP",
+        "M=M-1",
+        "A=M",
+        "D=M-D",
+        "@SP",
+        "A=M",
+        "M=D",
+        "@SP",
+        "M=M+1",
+      ]
+    elif command == "neg":
+      instructions = ["@SP", "M=M-1", "A=M", "M=-M", "@SP", "M=M+1"]
+    elif command == "eq":
+      instructions = [
+        "@SP",
+        "M=M-1",
+        "A=M",
+        "D=M",
+        "@SP",
+        "M=M-1",
+        "A=M",
+        "D=D-M",
+        "@TRUE",
+        "D;JEQ",
+        "M=0",
+        "@CONTINUE",
+        "0;JMP",
+        "(TRUE)",
+        "M=-1",
+        "(CONTINUE)",
+        "@SP",
+        "M=M+1",
+      ]
+    elif command == "gt":
+      instructions = [
+        "@SP",
+        "M=M-1",
+        "A=M",
+        "D=M",
+        "@SP",
+        "M=M-1",
+        "D=M-D",  # x - y
+        "@TRUE",
+        "D;JGT",
+        "M=0",
+        "@CONTINUE",
+        "0;JMP",
+        "(TRUE)",
+        "M=-1",
+        "(CONTINUE)",
+        "@SP",
+        "M=M+1",
+      ]
+    elif command == "lt":
+      instructions = [
+        "@SP",
+        "M=M-1",
+        "A=M",
+        "D=M",
+        "@SP",
+        "M=M-1",
+        "D=M-D",  # x - y
+        "@TRUE",
+        "D;JLT",
+        "M=0",
+        "@CONTINUE",
+        "0;JMP",
+        "(TRUE)",
+        "M=-1",
+        "(CONTINUE)",
+        "@SP",
+        "M=M+1",
+      ]
+    elif command == "and":
+      instructions = [
+        "@SP",
+        "M=M-1",
+        "A=M",
+        "D=M",
+        "@SP",
+        "M=M-1",
+        "A=M",
+        "M=M&D",  # x & y
+        "@SP",
+        "M=M+1",
+      ]
+    elif command == "or":
+      instructions = [
+        "@SP",
+        "M=M-1",
+        "A=M",
+        "D=M",
+        "@SP",
+        "M=M-1",
+        "A=M",
+        "M=M|D",  # x | y
+        "@SP",
+        "M=M+1",
+      ]
+    elif command == "not":
+      instructions = ["@SP", "M=M-1", "A=M", "M=!M", "@SP", "M=M+1"]
+
+    for ins in instructions:
+      self.write_line(ins)
+
+  def write_push_pop(self, command, segment, index):
+    self.write_line(f"{command} {segment} {index}")
+
+    if command == "push":
+      if segment == "local":
+        instructions = []
+      elif segment == "constant":
+        instructions = []
+      elif segment == "pointer":
+        instructions = []
+      elif segment == "temp":
+        instructions = []
+      elif segment == "arg":
+        instructions = []
+      elif segment == "this":
+        instructions = []
+      elif segment == "that":
+        instructions = []
+      elif segment == "static":
+        instructions = []
+    elif command == "pop":
+      if segment == "local":
+        instructions = []
+      elif segment == "constant":
+        instructions = []
+      elif segment == "pointer":
+        instructions = []
+      elif segment == "temp":
+        instructions = []
+      elif segment == "arg":
+        instructions = []
+      elif segment == "this":
+        instructions = []
+      elif segment == "that":
+        instructions = []
+      elif segment == "static":
+        instructions = []
+
+    for ins in instructions:
+      self.write_line(ins)
+
+  def write_line(self, line):
+    self.file.write(line + "\n")
+
+  def close(self):
+    self.file.close()
