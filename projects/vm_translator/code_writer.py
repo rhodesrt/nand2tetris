@@ -250,9 +250,17 @@ class ASMCodeWriter:
           "M=D"
         ]
       elif segment == "constant":
-        instructions = []
+        raise ValueError("Cannot 'pop' into the 'constant' segment.")
       elif segment == "pointer":
-        instructions = []
+        symbol = "THIS" if index == "0" else "THAT"
+        instructions = [
+          "@SP",
+          "M=M-1",
+          "A=M",
+          "D=M",
+          f"@{symbol}",
+          "M=D"
+        ]
       elif segment == "temp":
         instructions = []
       elif segment == "arg":
