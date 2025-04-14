@@ -24,6 +24,9 @@ def main():
     elif parser.command_type() == C.PUSH:
       code_writer.write_push_pop("push", parser.arg_1(), parser.arg_2())
 
+  code_writer.loop()
+  code_writer.close()
+
 
 def validate_args(args):
   if len(args) != 1:
@@ -34,7 +37,8 @@ def validate_args(args):
   if path[-3:] != ".vm":
     print("Usage: Must be .vm file input")
     return
-  if not path[0].isupper():
+  filename = os.path.basename(path)
+  if not filename[0].isupper():
     print("Usage: .vm file must have first character uppercase")
     return
 

@@ -22,10 +22,15 @@ class VMParser:
     pos = self.file.tell()
     line = self.file.readline()
     self.file.seek(pos)
-    return line != ""
+    return line
 
   def advance(self):
-    self.command = self.file.readline()
+    while True:
+      line = self.file.readline()
+      if not line or line.strip() == "" or line.strip().startswith("//"):
+        continue
+      self.command = line
+      break
 
   def command_type(self):
     command = self.command.strip().split()[0]
@@ -38,7 +43,7 @@ class VMParser:
 
   def arg_1(self):
     if self.command_type() == C.ARITHMETIC:
-      return self.command
+      return self.command.strip()
     elif self.command_type() == C.POP or self.command_type() == C.PUSH:
       return self.command.strip().split()[1]
 

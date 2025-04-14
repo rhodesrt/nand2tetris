@@ -134,7 +134,7 @@ class ASMCodeWriter:
       self.write_line(ins)
 
   def write_push_pop(self, command, segment, index):
-    self.write_line(f"{command} {segment} {index}")
+    self.write_line(f"// {command} {segment} {index}")
 
     if command == "push":
       if segment == "local":
@@ -183,7 +183,7 @@ class ASMCodeWriter:
           "@SP",
           "M=M+1"
         ]
-      elif segment == "arg":
+      elif segment == "argument":
         instructions = [
           f"@{index}",
           "D=A",
@@ -277,7 +277,7 @@ class ASMCodeWriter:
           "A=M",
           "M=D"
         ]
-      elif segment == "arg":
+      elif segment == "argument":
         instructions = [
           f"@{index}",
           "D=A",
@@ -337,6 +337,12 @@ class ASMCodeWriter:
 
     for ins in instructions:
       self.write_line(ins)
+  
+  def loop(self):
+    self.write_line("// Infinite loop")
+    self.write_line("(END)")
+    self.write_line("@END")
+    self.write_line("0;JMP")
 
   def write_line(self, line):
     self.file.write(line + "\n")
