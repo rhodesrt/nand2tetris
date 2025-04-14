@@ -184,7 +184,18 @@ class ASMCodeWriter:
           "M=M+1"
         ]
       elif segment == "arg":
-        instructions = []
+        instructions = [
+          f"@{index}",
+          "D=A",
+          "@ARG",
+          "A=M+D",
+          "D=M",
+          "@SP",
+          "A=M",
+          "M=D",
+          "@SP",
+          "M=M+1"
+        ]
       elif segment == "this":
         instructions = []
       elif segment == "that":
