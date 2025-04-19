@@ -1,6 +1,7 @@
 class ASMCodeWriter:
   def __init__(self, path):
     self.output_file = open(f"{path[:-3]}.asm", "w")
+    self.function_name = None
 
   def set_filename(self, filename):
     self.filename = filename
@@ -327,6 +328,10 @@ class ASMCodeWriter:
 
   def write_label(self, label):
     self.write_line(f"// label {label}")
+    if self.function_name:
+      self.write_line(f"({self.function_name}${label})")
+    else:
+      self.write_line(f"({label})")
 
   def write_goto(self, label):
     self.write_line(f"// goto {label}")
@@ -336,6 +341,7 @@ class ASMCodeWriter:
 
   def write_function(self, function_name, n_vars):
     self.write_line(f"// function {function_name} {n_vars}")
+    self.function_name = function_name
 
   def write_call(self, function_name, n_args):
     self.write_line(f"// call {function_name} {n_args}")
