@@ -345,6 +345,16 @@ class ASMCodeWriter:
 
   def write_if(self, label):
     self.write_line(f"// if-goto {label}")
+    instructions = [
+      "@SP",
+      "M=M-1",
+      "A=M",
+      "D=M",
+      f"@{self.function_name}${label}" if self.function_name else f"@{label}",
+      "D;JNE",
+    ]
+    for ins in instructions:
+      self.write_line(ins)
 
   def write_function(self, function_name, n_vars):
     self.write_line(f"// function {function_name} {n_vars}")
