@@ -13,6 +13,7 @@ def main():
 
   parser = VMParser(path)
   code_writer = ASMCodeWriter(path)
+  code_writer.set_filename(path.split("/")[-1][:-3])
 
   while parser.has_more_lines():
     parser.advance()

@@ -1,7 +1,9 @@
 class ASMCodeWriter:
   def __init__(self, path):
-    self.file = open(f"{path[:-3]}.asm", "w")
-    self.filename = path.split("/")[-1][:-3]
+    self.output_file = open(f"{path[:-3]}.asm", "w")
+
+  def set_filename(self, filename):
+    self.filename = filename
 
   def write_arithmetic(self, command):
     self.write_line(f"// {command}")
@@ -148,18 +150,10 @@ class ASMCodeWriter:
           "A=M",
           "M=D",
           "@SP",
-          "M=M+1"
+          "M=M+1",
         ]
       elif segment == "constant":
-        instructions = [
-          f"@{index}",
-          "D=A",
-          "@SP",
-          "A=M",
-          "M=D",
-          "@SP",
-          "M=M+1"
-        ]
+        instructions = [f"@{index}", "D=A", "@SP", "A=M", "M=D", "@SP", "M=M+1"]
       elif segment == "pointer":
         instructions = [
           "@THIS" if index == "0" else "@THAT",
@@ -168,7 +162,7 @@ class ASMCodeWriter:
           "A=M",
           "M=D",
           "@SP",
-          "M=M+1"
+          "M=M+1",
         ]
       elif segment == "temp":
         instructions = [
@@ -181,7 +175,7 @@ class ASMCodeWriter:
           "A=M",
           "M=D",
           "@SP",
-          "M=M+1"
+          "M=M+1",
         ]
       elif segment == "argument":
         instructions = [
@@ -194,7 +188,7 @@ class ASMCodeWriter:
           "A=M",
           "M=D",
           "@SP",
-          "M=M+1"
+          "M=M+1",
         ]
       elif segment == "this":
         instructions = [
@@ -207,7 +201,7 @@ class ASMCodeWriter:
           "A=M",
           "M=D",
           "@SP",
-          "M=M+1"
+          "M=M+1",
         ]
       elif segment == "that":
         instructions = [
@@ -220,7 +214,7 @@ class ASMCodeWriter:
           "A=M",
           "M=D",
           "@SP",
-          "M=M+1"
+          "M=M+1",
         ]
       elif segment == "static":
         instructions = [
@@ -230,7 +224,7 @@ class ASMCodeWriter:
           "A=M",
           "M=D",
           "@SP",
-          "M=M+1"
+          "M=M+1",
         ]
     elif command == "pop":
       if segment == "local":
@@ -247,20 +241,13 @@ class ASMCodeWriter:
           "D=M",
           "@R13",
           "A=M",
-          "M=D"
+          "M=D",
         ]
       elif segment == "constant":
         raise ValueError("Cannot 'pop' into the 'constant' segment.")
       elif segment == "pointer":
         symbol = "THIS" if index == "0" else "THAT"
-        instructions = [
-          "@SP",
-          "M=M-1",
-          "A=M",
-          "D=M",
-          f"@{symbol}",
-          "M=D"
-        ]
+        instructions = ["@SP", "M=M-1", "A=M", "D=M", f"@{symbol}", "M=D"]
       elif segment == "temp":
         instructions = [
           f"@{index}",
@@ -275,7 +262,7 @@ class ASMCodeWriter:
           "D=M",
           "@R13",
           "A=M",
-          "M=D"
+          "M=D",
         ]
       elif segment == "argument":
         instructions = [
@@ -291,7 +278,7 @@ class ASMCodeWriter:
           "D=M",
           "@R13",
           "A=M",
-          "M=D"
+          "M=D",
         ]
       elif segment == "this":
         instructions = [
@@ -307,7 +294,7 @@ class ASMCodeWriter:
           "D=M",
           "@R13",
           "A=M",
-          "M=D"
+          "M=D",
         ]
       elif segment == "that":
         instructions = [
@@ -323,7 +310,7 @@ class ASMCodeWriter:
           "D=M",
           "@R13",
           "A=M",
-          "M=D"
+          "M=D",
         ]
       elif segment == "static":
         instructions = [
@@ -332,12 +319,30 @@ class ASMCodeWriter:
           "A=M",
           "D=M",
           f"@{self.filename}.{index}",
-          "M=D"
+          "M=D",
         ]
 
     for ins in instructions:
       self.write_line(ins)
-  
+
+  def write_label(self, label):
+    pass
+
+  def write_goto(self, label):
+    pass
+
+  def write_if(self, label):
+    pass
+
+  def write_function(self, function_name, n_args):
+    pass
+
+  def write_call(self, function_name, n_args):
+    pass
+
+  def write_return(self):
+    pass
+
   def loop(self):
     self.write_line("// Infinite loop")
     self.write_line("(END)")
@@ -345,7 +350,7 @@ class ASMCodeWriter:
     self.write_line("0;JMP")
 
   def write_line(self, line):
-    self.file.write(line + "\n")
+    self.output_file.write(line + "\n")
 
   def close(self):
-    self.file.close()
+    self.output_file.close()
