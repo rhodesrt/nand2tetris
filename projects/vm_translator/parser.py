@@ -6,6 +6,12 @@ class C(Enum):
   ARITHMETIC = "C_ARITHMETIC"
   PUSH = "PUSH"
   POP = "POP"
+  LABEL = "LABEL"
+  GOTO = "GOTO"
+  IF = "IF"
+  FUNCTION = "FUNCTION"
+  RETURN = "RETURN"
+  CALL = "CALL"
 
 
 class VMParser:
@@ -40,13 +46,45 @@ class VMParser:
       return C.PUSH
     elif command == "pop":
       return C.POP
+    elif command == "label":
+      return C.LABEL
+    elif command == "goto":
+      return C.GOTO
+    elif command == "if-goto":
+      return C.IF
+    elif command == "function":
+      return C.FUNCTION
+    elif command == "call":
+      return C.CALL
+    elif command == "return":
+      return C.RETURN
+    else:
+      raise ValueError("command type does not exist")
 
   def arg_1(self):
-    if self.command_type() == C.ARITHMETIC:
+    ct = self.command_type()
+    if ct == C.ARITHMETIC:
       return self.command.strip()
-    elif self.command_type() == C.POP or self.command_type() == C.PUSH:
+    elif (
+      ct == C.POP
+      or ct == C.PUSH
+      or ct == C.LABEL
+      or ct == C.GOTO
+      or ct == C.IF
+      or ct == C.FUNCTION
+      or ct == C.CALL
+    ):
       return self.command.strip().split()[1]
+    else:
+      raise ValueError("arg_1 not applicable for this command type")
 
   def arg_2(self):
-    if self.command_type() == C.PUSH or self.command_type() == C.POP:
+    if (
+      self.command_type() == C.PUSH
+      or self.command_type() == C.POP
+      or self.command_type() == C.FUNCTION
+      or self.command_type() == C.CALL
+    ):
       return self.command.strip().split()[2]
+    else:
+      raise ValueError("arg_2 not applicable for this command type")

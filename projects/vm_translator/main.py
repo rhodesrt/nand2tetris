@@ -1,5 +1,3 @@
-# python3 main.py <source.vm>
-
 import sys
 import os
 from parser import VMParser
@@ -17,13 +15,26 @@ def main():
 
   while parser.has_more_lines():
     parser.advance()
+    ct = parser.command_type()
 
-    if parser.command_type() == C.ARITHMETIC:
+    if ct == C.ARITHMETIC:
       code_writer.write_arithmetic(parser.arg_1())
-    elif parser.command_type() == C.POP:
+    elif ct == C.POP:
       code_writer.write_push_pop("pop", parser.arg_1(), parser.arg_2())
-    elif parser.command_type() == C.PUSH:
+    elif ct == C.PUSH:
       code_writer.write_push_pop("push", parser.arg_1(), parser.arg_2())
+    elif ct == C.LABEL:
+      code_writer.write_label(parser.arg_1())
+    elif ct == C.GOTO:
+      code_writer.write_goto(parser.arg_1())
+    elif ct == C.IF:
+      code_writer.write_if(parser.arg_1())
+    elif ct == C.FUNCTION:
+      code_writer.write_function(parser.arg_1(), parser.arg_2())
+    elif ct == C.CALL:
+      code_writer.write_call(parser.arg_1(), parser.arg_2())
+    elif ct == C.RETURN:
+      code_writer.write_return()
 
   code_writer.loop()
   code_writer.close()

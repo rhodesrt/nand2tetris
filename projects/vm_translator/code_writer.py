@@ -326,22 +326,22 @@ class ASMCodeWriter:
       self.write_line(ins)
 
   def write_label(self, label):
-    pass
+    self.write_line(f"// label {label}")
 
   def write_goto(self, label):
-    pass
+    self.write_line(f"// goto {label}")
 
   def write_if(self, label):
-    pass
+    self.write_line(f"// if-goto {label}")
 
-  def write_function(self, function_name, n_args):
-    pass
+  def write_function(self, function_name, n_vars):
+    self.write_line(f"// function {function_name} {n_vars}")
 
   def write_call(self, function_name, n_args):
-    pass
+    self.write_line(f"// call {function_name} {n_args}")
 
   def write_return(self):
-    pass
+    self.write_line("// return")
 
   def loop(self):
     self.write_line("// Infinite loop")
