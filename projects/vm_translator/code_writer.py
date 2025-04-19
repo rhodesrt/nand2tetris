@@ -335,6 +335,13 @@ class ASMCodeWriter:
 
   def write_goto(self, label):
     self.write_line(f"// goto {label}")
+    if self.function_name:
+      instructions = [f"@{self.function_name}${label}", "0;JMP"]
+    else:
+      instructions = [f"@{label}", "0;JMP"]
+
+    for ins in instructions:
+      self.write_line(ins)
 
   def write_if(self, label):
     self.write_line(f"// if-goto {label}")
