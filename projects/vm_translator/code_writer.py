@@ -359,6 +359,12 @@ class ASMCodeWriter:
   def write_function(self, function_name, n_vars):
     self.write_line(f"// function {function_name} {n_vars}")
     self.function_name = function_name
+    self.write_line(f"({function_name})")
+    n_vars = int(n_vars)
+    for _ in range(n_vars):
+      instructions = ["@0", "D=A", "@SP", "A=M", "M=D", "@SP", "M=M+1"]
+      for ins in instructions:
+        self.write_line(ins)
 
   def write_call(self, function_name, n_args):
     self.write_line(f"// call {function_name} {n_args}")
