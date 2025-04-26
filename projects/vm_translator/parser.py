@@ -64,7 +64,7 @@ class VMParser:
   def arg_1(self):
     ct = self.command_type()
     if ct == C.ARITHMETIC:
-      return self.command.strip()
+      return self.command.strip().split()[0]
     elif (
       ct == C.POP
       or ct == C.PUSH
@@ -88,3 +88,6 @@ class VMParser:
       return self.command.strip().split()[2]
     else:
       raise ValueError("arg_2 not applicable for this command type")
+
+  def close(self):
+    self.file.close()

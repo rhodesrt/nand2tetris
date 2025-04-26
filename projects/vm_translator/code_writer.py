@@ -1,8 +1,20 @@
 class ASMCodeWriter:
-  def __init__(self, path):
-    self.output_file = open(f"{path[:-3]}.asm", "w")
+  def __init__(self, output_path):
+    self.output_file = open(output_path, "w")
     self.function_name = None
     self.return_label_counter = 0
+
+  def write_init(self):
+    self.write_line("// Bootstrap code")
+    instructions = [
+      "@256",
+      "D=A",
+      "@SP",
+      "M=D",
+    ]
+    for ins in instructions:
+      self.write_line(ins)
+    self.write_call("Sys.init", 0)  # Use the existing write_call logic
 
   def set_filename(self, filename):
     self.filename = filename
@@ -491,12 +503,6 @@ class ASMCodeWriter:
 
     for ins in instructions:
       self.write_line(ins)
-
-  def loop(self):
-    self.write_line("// Infinite loop")
-    self.write_line("(END)")
-    self.write_line("@END")
-    self.write_line("0;JMP")
 
   def write_line(self, line):
     self.output_file.write(line + "\n")
