@@ -2,6 +2,7 @@ class ASMCodeWriter:
   def __init__(self, path):
     self.output_file = open(f"{path[:-3]}.asm", "w")
     self.function_name = None
+    self.return_label_counter = 0
 
   def set_filename(self, filename):
     self.filename = filename
@@ -368,6 +369,62 @@ class ASMCodeWriter:
 
   def write_call(self, function_name, n_args):
     self.write_line(f"// call {function_name} {n_args}")
+
+    return_label = f"{function_name}$ret.{self.return_label_counter}"
+    self.return_label_counter += 1
+    n_args = int(n_args)
+
+    instructions = [
+      f"@{return_label}",
+      "D=A",
+      "@SP",
+      "A=M",
+      "M=D",
+      "@SP",
+      "M=M+1",
+    ]
+    for segment_pointer in ["LCL", "ARG", "THIS", "THAT"]:
+      instructions.extend(
+        [
+          f"@{segment_pointer}",
+          "D=M",
+          "@SP",
+          "A=M",
+          "M=D",
+          "@SP",
+          "M=M+1",
+        ]
+      )
+    instructions.extend(
+      [
+        "@SP",
+        "D=M",
+        f"@{n_args}",
+        "D=D-A",  # D = SP - n_args
+        "@5",
+        "D=D-A",  # D = SP - n_args - 5
+        "@ARG",
+        "M=D",
+      ]
+    )
+    instructions.extend(
+      [
+        "@SP",
+        "D=M",
+        "@LCL",
+        "M=D",
+      ]
+    )
+    instructions.extend(
+      [
+        f"@{function_name}",
+        "0;JMP",
+      ]
+    )
+    instructions.append(f"({return_label})")
+
+    for ins in instructions:
+      self.write_line(ins)
 
   def write_return(self):
     self.write_line("// return")
